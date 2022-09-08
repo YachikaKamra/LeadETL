@@ -31,6 +31,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "Mapping3CMCD"
+				},
+				{
+					"dataset": {
+						"referenceName": "SDENSC_TB",
+						"type": "DatasetReference"
+					},
+					"name": "Mapping4SDENSC"
 				}
 			],
 			"sinks": [],
@@ -64,6 +71,18 @@
 				},
 				{
 					"name": "EnquiryCategoryTypeLookup"
+				},
+				{
+					"name": "Mapping4Select"
+				},
+				{
+					"name": "FilterDSO0001"
+				},
+				{
+					"name": "EnquirySubSourceNameLookup"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -211,6 +230,23 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Mapping3CMCD",
+				"source(output(",
+				"          ENSC_CMPN_NO as string,",
+				"          ENSC_CORP_NO as string,",
+				"          ENSC_GRP_CODE as string,",
+				"          ENSC_CODE as string,",
+				"          ENSC_GRP_NAME as string,",
+				"          ENSC_NAME as string,",
+				"          ENSC_PRIORITY as string,",
+				"          ENSC_DELYN as string,",
+				"          ENSC_CRTE_EMP_NO as string,",
+				"          ENSC_CRTE_DTIME as string,",
+				"          ENSC_UPDT_EMP_NO as string,",
+				"          ENSC_UPDT_DTIME as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Mapping4SDENSC",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -259,7 +295,26 @@
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Category_Type, false),",
-				"     broadcast: 'auto')~> EnquiryCategoryTypeLookup"
+				"     broadcast: 'auto')~> EnquiryCategoryTypeLookup",
+				"Mapping4SDENSC select(mapColumn(",
+				"          ENSC_GRP_CODE,",
+				"          EQRY_SUB_SRC_CODE = ENSC_CODE,",
+				"          Enquiry_Sub_Source_Name = ENSC_NAME",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Mapping4Select",
+				"Mapping4Select filter(ENSC_GRP_CODE=='DSO0001') ~> FilterDSO0001",
+				"EnquiryCategoryTypeLookup, FilterDSO0001 lookup(EQRYTB@EQRY_SUB_SRC_CODE == Mapping4Select@EQRY_SUB_SRC_CODE,",
+				"     multiple: false,",
+				"     pickup: 'first',",
+				"     asc(Enquiry_Sub_Source_Name, false),",
+				"     broadcast: 'auto')~> EnquirySubSourceNameLookup",
+				"EnquirySubSourceNameLookup select(mapColumn(",
+				"          EQRY_SUB_SRC_CODE = EQRYTB@EQRY_SUB_SRC_CODE,",
+				"          Enquiry_Sub_Source_Name",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
