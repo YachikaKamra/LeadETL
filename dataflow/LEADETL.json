@@ -102,7 +102,15 @@
 				"     ignoreNoFilesFound: false) ~> EQRYTB",
 				"EQRYTB derive(Occup_Key = concat('EQRY_DLR_NO','|','EQRY_CUST_NO'),",
 				"          Comp_key = concat('EQRY_MAKER_CODE','|','EQRY_EXCHG_MODEL_CODE'),",
-				"          {First Follow-Up KEY} = concat('EQRY_DLR_NO','|','EQRY_ENQRY_NO')) ~> TransformationsStep1"
+				"          {First Follow-Up KEY} = concat('EQRY_DLR_NO','|','EQRY_ENQRY_NO'),",
+				"          Key = concat(EQRY_ENQRY_NO,'|',EQRY_DLR_NO),",
+				"          EY = left(EQRY_DATE,4),",
+				"          ED = right(EQRY_DATE,2),",
+				"          EM = substring(EQRY_DATE, 6, 2),",
+				"          Enquiry_Source_Type = iif(EQRY_SRC_FLG== 'MOB','MySales',    iif(length(EQRY_SR_NUM_REAL)>0,'Online','DMS')),",
+				"          {Allocated/Unallocated} = iif(length(trim(EQRY_EMP_NO))<1, 'Unallocated', 'Allocated'),",
+				"          Flag = 'Enquiry',",
+				"          column1 = ERROR_FUNCTION('')) ~> TransformationsStep1"
 			]
 		}
 	}
