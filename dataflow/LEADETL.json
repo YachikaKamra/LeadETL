@@ -38,6 +38,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "Mapping4SDENSC"
+				},
+				{
+					"name": "source1"
 				}
 			],
 			"sinks": [],
@@ -250,6 +253,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Mapping4SDENSC",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
