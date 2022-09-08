@@ -31,7 +31,7 @@
 					"name": "FilterCMMGRPCODE"
 				},
 				{
-					"name": "lookup1"
+					"name": "EnquiryStatusLookup"
 				}
 			],
 			"scriptLines": [
@@ -159,7 +159,7 @@
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Status, false),",
-				"     broadcast: 'auto')~> lookup1"
+				"     broadcast: 'auto')~> EnquiryStatusLookup"
 			]
 		}
 	}
