@@ -55,6 +55,15 @@
 				},
 				{
 					"name": "EnquiryType1Lookup"
+				},
+				{
+					"name": "Mapping3Select"
+				},
+				{
+					"name": "FilterDSO0012"
+				},
+				{
+					"name": "EnquiryCategoryTypeLookup"
 				}
 			],
 			"scriptLines": [
@@ -85,7 +94,7 @@
 				"          EQRY_LISTD_CORP as string,",
 				"          EQRY_CORP_NAME as string,",
 				"          EQRY_RFRL_BY as string,",
-				"          EQRY_CRTE_DTIME as string,",
+				"          EQRY_CRTE_DTIME as timestamp,",
 				"          EQRY_CRTE_EMP_NO as string,",
 				"          EQRY_UPDT_DTIME as string,",
 				"          EQRY_UPDT_EMP_NO as string,",
@@ -116,7 +125,7 @@
 				"          EQRY_APNT_DTIME as string,",
 				"          VIST_DTIME as string,",
 				"          LEAV_DTIME as string,",
-				"          EQRY_CTGR_CODE as string,",
+				"          EQRY_CTGR_CODE as integer,",
 				"          EQRY_SUB_SRC_CODE as string,",
 				"          EQRY_CLSE_GRP_TYPE as string,",
 				"          EQRY_BUDG_TYPE as string,",
@@ -185,7 +194,7 @@
 				"          CMPN_NO as string,",
 				"          CORP_NO as string,",
 				"          CMM_GRP_CODE as string,",
-				"          CMM_CODE as string,",
+				"          CMM_CODE as integer,",
 				"          CMM_CODE_NAME as string,",
 				"          REMARK_1 as string,",
 				"          REMARK_2 as string,",
@@ -237,7 +246,20 @@
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Type1, false),",
-				"     broadcast: 'auto')~> EnquiryType1Lookup"
+				"     broadcast: 'auto')~> EnquiryType1Lookup",
+				"Mapping3CMCD select(mapColumn(",
+				"          CMM_GRP_CODE,",
+				"          EQRY_CTGR_CODE = CMM_CODE,",
+				"          Enquiry_Category_Type = CMM_CODE_NAME",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Mapping3Select",
+				"Mapping3Select filter(CMM_GRP_CODE=='DSO0012') ~> FilterDSO0012",
+				"EnquiryType1Lookup, FilterDSO0012 lookup(EQRYTB@EQRY_CTGR_CODE == Mapping3Select@EQRY_CTGR_CODE,",
+				"     multiple: false,",
+				"     pickup: 'first',",
+				"     asc(Enquiry_Category_Type, false),",
+				"     broadcast: 'auto')~> EnquiryCategoryTypeLookup"
 			]
 		}
 	}
