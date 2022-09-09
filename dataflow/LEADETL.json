@@ -38,6 +38,12 @@
 						"type": "DatasetReference"
 					},
 					"name": "Mapping4SDENSC"
+				},
+				{
+					"name": "CDCUDT"
+				},
+				{
+					"name": "MappingOccupation"
 				}
 			],
 			"sinks": [],
@@ -89,6 +95,12 @@
 				},
 				{
 					"name": "Transformation1Step2"
+				},
+				{
+					"name": "Transformation1Step3"
+				},
+				{
+					"name": "Transformation1Step5"
 				}
 			],
 			"scriptLines": [
@@ -253,6 +265,10 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Mapping4SDENSC",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> CDCUDT",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> MappingOccupation",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -319,7 +335,13 @@
 				"     broadcast: 'auto')~> EnquirySubSourceNameLookup",
 				"EnquirySubSourceNameLookup derive(Enquiry_Sub_Source_Name = upper(iif(Enquiry_Sub_Source_Name=='Ads', 'Advertisements',Enquiry_Sub_Source_Name))) ~> Transformation2Step1",
 				"Transformation2Step1 derive(Enquiry_Sub_Source_Name = iif(Enquiry_Sub_Source_Name=='MYKIA', replace(Enquiry_Sub_Source_Name, 'MYKIA', 'ONLINE'), Enquiry_Sub_Source_Name)) ~> Transformation3Step1",
-				"Transformation3Step1 derive(Enquiry_Type2 = iif(Enquiry_Type1=='N','Neutral',Enquiry_Type1)) ~> Transformation1Step2"
+				"Transformation3Step1 derive(Enquiry_Type2 = iif(Enquiry_Type1=='N','Neutral',Enquiry_Type1),",
+				"          {Open/Close Flag} = iif(EQRYTB@EQRY_STAT=='01','Open',\r",
+				"                 iif(EQRYTB@EQRY_STAT=='05','Open',\r",
+				"                iif(EQRYTB@EQRY_STAT=='07','Open',\r",
+				"                        iif(EQRYTB@EQRY_STAT=='09','Open','Close'))))) ~> Transformation1Step2",
+				"Transformation1Step2 derive(Enquiry_Type = iif(\"Open/Close Flag\"=='Open','Enquiry_Type2',toString(null()))) ~> Transformation1Step3",
+				"CDCUDT derive(Occup_Key = concat(CUDT_DLR_NO,'|',CUDT_CUST_NO)) ~> Transformation1Step5"
 			]
 		}
 	}
