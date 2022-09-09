@@ -40,9 +40,17 @@
 					"name": "Mapping4SDENSC"
 				},
 				{
+					"dataset": {
+						"referenceName": "CDCUDT",
+						"type": "DatasetReference"
+					},
 					"name": "CDCUDT"
 				},
 				{
+					"dataset": {
+						"referenceName": "Occupation",
+						"type": "DatasetReference"
+					},
 					"name": "MappingOccupation"
 				}
 			],
@@ -101,6 +109,15 @@
 				},
 				{
 					"name": "Transformation1Step5"
+				},
+				{
+					"name": "MappingOccSelect"
+				},
+				{
+					"name": "OccNameLookup"
+				},
+				{
+					"name": "CDCUDTSelect"
 				}
 			],
 			"scriptLines": [
@@ -265,10 +282,66 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Mapping4SDENSC",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> CDCUDT",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> MappingOccupation",
+				"source(output(",
+				"          CUDT_CMPN_NO as string,",
+				"          CUDT_CORP_NO as string,",
+				"          CUDT_DLR_NO as string,",
+				"          CUDT_CUST_NO as string,",
+				"          CUDT_SEX_TYPE as string,",
+				"          CUDT_RPLCE_PLCY_TYPE as string,",
+				"          CUDT_CMPN_NAME as string,",
+				"          CUDT_PSTCD_CODE as string,",
+				"          CUDT_PCITY_CODE as string,",
+				"          CUDT_PADDR1 as string,",
+				"          CUDT_PADDR2 as string,",
+				"          CUDT_PADDR3 as string,",
+				"          CUDT_PPIN_CODE as string,",
+				"          CUDT_PLCTY_CODE as string,",
+				"          CUDT_JOB_CODE as string,",
+				"          CUDT_DSITN_CODE as string,",
+				"          CUDT_CMPN_TYPE as string,",
+				"          CUDT_DPTMT_NAME as string,",
+				"          CUDT_BIZ_TYPE as string,",
+				"          CUDT_OSTCD_CODE as string,",
+				"          CUDT_OCITY_CODE as string,",
+				"          CUDT_OADDR1 as string,",
+				"          CUDT_OADDR2 as string,",
+				"          CUDT_OADDR3 as string,",
+				"          CUDT_OPIN_CODE as string,",
+				"          CUDT_OLCTY_CODE as string,",
+				"          CUDT_OEXTNG_FLEET_SIZE as string,",
+				"          CUDT_OHEAD_OFCE_LCTN_CODE as string,",
+				"          CUDT_OSLRY_STR_CODE as string,",
+				"          CUDT_OPMNT_RLSE_LCTN_CODE as string,",
+				"          CUDT_CRTE_DTIME as string,",
+				"          CUDT_CRTE_EMP_NO as string,",
+				"          CUDT_UPDT_DTIME as string,",
+				"          CUDT_UPDT_EMP_NO as string,",
+				"          CUDT_INCOMME as string,",
+				"          ACDM_CAREER_CODE as string,",
+				"          JODIAC_CODE as string,",
+				"          MTRL_STAUS as string,",
+				"          CMPN_PHONE_NO as string,",
+				"          CUDT_HOBBY_CODE as string,",
+				"          CUDT_DLR_CODE as string,",
+				"          SALUT_CODE as string,",
+				"          CUDT_SPORT as string,",
+				"          CUDT_NEWS as string,",
+				"          CUDT_CNTTYPE as string,",
+				"          CUDT_CNTDAY as string,",
+				"          CUDT_CNTTIME as string,",
+				"          CUDT_INDUSTRY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CDCUDT",
+				"source(output(",
+				"          OCCUPATION_CODE as string,",
+				"          DETAIL as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> MappingOccupation",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -341,7 +414,25 @@
 				"                iif(EQRYTB@EQRY_STAT=='07','Open',\r",
 				"                        iif(EQRYTB@EQRY_STAT=='09','Open','Close'))))) ~> Transformation1Step2",
 				"Transformation1Step2 derive(Enquiry_Type = iif(\"Open/Close Flag\"=='Open','Enquiry_Type2',toString(null()))) ~> Transformation1Step3",
-				"CDCUDT derive(Occup_Key = concat(CUDT_DLR_NO,'|',CUDT_CUST_NO)) ~> Transformation1Step5"
+				"CDCUDT derive(Occup_Key = concat(CUDT_DLR_NO,'|',CUDT_CUST_NO)) ~> Transformation1Step5",
+				"MappingOccupation select(mapColumn(",
+				"          CUDT_JOB_CODE = OCCUPATION_CODE,",
+				"          DETAIL",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> MappingOccSelect",
+				"Transformation1Step5, MappingOccSelect lookup(CDCUDT@CUDT_JOB_CODE == MappingOccSelect@CUDT_JOB_CODE,",
+				"     multiple: false,",
+				"     pickup: 'first',",
+				"     asc(DETAIL, false),",
+				"     broadcast: 'auto')~> OccNameLookup",
+				"OccNameLookup select(mapColumn(",
+				"          Occup_Key,",
+				"          CUDT_JOB_CODE = MappingOccSelect@CUDT_JOB_CODE,",
+				"          Occ_Name = DETAIL",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> CDCUDTSelect"
 			]
 		}
 	}
