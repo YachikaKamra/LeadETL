@@ -121,6 +121,9 @@
 				},
 				{
 					"name": "LeftJoin"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -440,7 +443,8 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> LeftJoin"
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin filter(CUDT_JOB_CODE=='ARC') ~> filter1"
 			]
 		}
 	}
