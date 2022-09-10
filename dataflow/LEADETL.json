@@ -80,6 +80,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "EQCR"
+				},
+				{
+					"dataset": {
+						"referenceName": "Teamleader",
+						"type": "DatasetReference"
+					},
+					"name": "Teamleader"
 				}
 			],
 			"sinks": [],
@@ -182,6 +189,12 @@
 				},
 				{
 					"name": "EQRYSelect1"
+				},
+				{
+					"name": "Transformation1Step9"
+				},
+				{
+					"name": "TeamLeaderSelect"
 				}
 			],
 			"scriptLines": [
@@ -522,6 +535,21 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> EQCR",
+				"source(output(",
+				"          TEAM_LEADER as string,",
+				"          TEAM_LEADER_JOINING_DATE as string,",
+				"          TEAM_LEADER_LEAVE_DATE as string,",
+				"          KEC as string,",
+				"          KEC_NAME as string,",
+				"          KEC_CODE as string,",
+				"          KEC_JOIN_DATE as string,",
+				"          KEC_LEAVE_DATE as string,",
+				"          EQRY_ENQRY_NO as string,",
+				"          EQRY_DLR_NO as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Teamleader",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -788,7 +816,26 @@
 				"          Comp_key = UCMODLSelect@Comp_key",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> EQRYSelect1"
+				"     skipDuplicateMapOutputs: true) ~> EQRYSelect1",
+				"Teamleader derive(Team_Leader_Name = upper(split(TEAM_LEADER,';')[2]),",
+				"          Team_Leader_Code = split(TEAM_LEADER,';')[1],",
+				"          {Active/Inactive} = upper(split(TEAM_LEADER,';')[3]),",
+				"          KEC = upper(KEC_NAME)) ~> Transformation1Step9",
+				"Transformation1Step9 select(mapColumn(",
+				"          TEAM_LEADER,",
+				"          Team_leader_Joining_Date = TEAM_LEADER_JOINING_DATE,",
+				"          KEC_Short_Code = KEC,",
+				"          KEC_Long_Code = KEC_CODE,",
+				"          KEC_Join_Date = KEC_JOIN_DATE,",
+				"          KEC_Leave_Date = KEC_LEAVE_DATE,",
+				"          {Link_Enquiry_No.} = EQRY_ENQRY_NO,",
+				"          Dealer_No = EQRY_DLR_NO,",
+				"          Team_Leader_Name,",
+				"          Team_Leader_Code,",
+				"          {Active/Inactive}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TeamLeaderSelect"
 			]
 		}
 	}
