@@ -59,6 +59,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "CDCSPM"
+				},
+				{
+					"dataset": {
+						"referenceName": "UCMAKE",
+						"type": "DatasetReference"
+					},
+					"name": "UCMAKE"
 				}
 			],
 			"sinks": [],
@@ -137,6 +144,12 @@
 				},
 				{
 					"name": "LeftJoinCDCSPM"
+				},
+				{
+					"name": "UCMAKESelect"
+				},
+				{
+					"name": "LeftJoinUCMAKE"
 				}
 			],
 			"scriptLines": [
@@ -418,6 +431,22 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> CDCSPM",
+				"source(output(",
+				"          MAKE_CMPN_NO as string,",
+				"          MAKE_CORP_NO as string,",
+				"          MAKE_MAKER_CODE as string,",
+				"          MAKE_FULL_DSCTN as string,",
+				"          MAKE_SHORT_DSCTN as string,",
+				"          MAKE_DELT_YN as string,",
+				"          MAKE_PRIORITY as string,",
+				"          MAKE_CRTE_DTIME as string,",
+				"          MAKE_CRTE_EMP_NO as string,",
+				"          MAKE_UPDT_DTIME as string,",
+				"          MAKE_UPDT_EMP_NO as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> UCMAKE",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -525,7 +554,18 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> LeftJoinCDCSPM"
+				"     broadcast: 'auto')~> LeftJoinCDCSPM",
+				"UCMAKE select(mapColumn(",
+				"          EQRY_MAKER_CODE = MAKE_MAKER_CODE,",
+				"          OEM = MAKE_FULL_DSCTN",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UCMAKESelect",
+				"LeftJoinCDCSPM, UCMAKESelect join(EQRYTB@EQRY_MAKER_CODE == UCMAKESelect@EQRY_MAKER_CODE,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinUCMAKE"
 			]
 		}
 	}
