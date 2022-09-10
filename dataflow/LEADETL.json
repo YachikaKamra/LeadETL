@@ -66,6 +66,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "UCMAKE"
+				},
+				{
+					"dataset": {
+						"referenceName": "UCMODL",
+						"type": "DatasetReference"
+					},
+					"name": "UCMODL"
 				}
 			],
 			"sinks": [],
@@ -150,6 +157,15 @@
 				},
 				{
 					"name": "LeftJoinUCMAKE"
+				},
+				{
+					"name": "Transformation1Step8"
+				},
+				{
+					"name": "UCMODLSelect"
+				},
+				{
+					"name": "LeftJoinUCMODL"
 				}
 			],
 			"scriptLines": [
@@ -447,6 +463,25 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> UCMAKE",
+				"source(output(",
+				"          MODL_CMPN_NO as string,",
+				"          MODL_CORP_NO as string,",
+				"          MODL_MAKER_CODE as string,",
+				"          MODL_MODEL_CODE as string,",
+				"          MODL_FULL_DSCTN as string,",
+				"          MODL_SHORT_DSCTN as string,",
+				"          MODL_VHCL_TYPE as string,",
+				"          MODL_DELT_YN as string,",
+				"          MODL_PRIORITY as string,",
+				"          MODL_CRTE_DTIME as string,",
+				"          MODL_CRTE_EMP_NO as string,",
+				"          MODL_UPDT_DTIME as string,",
+				"          MODL_UPDT_EMP_NO as string,",
+				"          MODL_AVAILABLE_NEW_CAR as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> UCMODL",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -565,7 +600,19 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> LeftJoinUCMAKE"
+				"     broadcast: 'auto')~> LeftJoinUCMAKE",
+				"UCMODL derive(Comp_key = concat(MODL_MAKER_CODE,'|',MODL_MODEL_CODE)) ~> Transformation1Step8",
+				"Transformation1Step8 select(mapColumn(",
+				"          OEM_MODEL = MODL_FULL_DSCTN,",
+				"          Comp_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UCMODLSelect",
+				"LeftJoinUCMAKE, UCMODLSelect join(TransformationsStep1@Comp_key == UCMODLSelect@Comp_key,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinUCMODL"
 			]
 		}
 	}
