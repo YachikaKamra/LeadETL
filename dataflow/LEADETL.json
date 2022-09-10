@@ -127,13 +127,16 @@
 					"name": "CDCUDTSelect"
 				},
 				{
-					"name": "LeftJoin"
+					"name": "LeftJoinCDCUDT"
 				},
 				{
 					"name": "CDCSPMSelect"
 				},
 				{
 					"name": "Transformation1Step6"
+				},
+				{
+					"name": "LeftJoinCDCSPM"
 				}
 			],
 			"scriptLines": [
@@ -510,14 +513,19 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> LeftJoin",
+				"     broadcast: 'auto')~> LeftJoinCDCUDT",
 				"Transformation1Step6 select(mapColumn(",
 				"          Dob = CSPM_BRTH_DATE,",
 				"          Occup_Key",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> CDCSPMSelect",
-				"CDCSPM derive(Occup_Key = concat(CSPM_DLR_NO,'|',CSPM_CUST_NO)) ~> Transformation1Step6"
+				"CDCSPM derive(Occup_Key = concat(CSPM_DLR_NO,'|',CSPM_CUST_NO)) ~> Transformation1Step6",
+				"LeftJoinCDCUDT, CDCSPMSelect join(TransformationsStep1@Occup_Key == CDCSPMSelect@Occup_Key,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinCDCSPM"
 			]
 		}
 	}
