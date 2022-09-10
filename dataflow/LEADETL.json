@@ -73,6 +73,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "UCMODL"
+				},
+				{
+					"dataset": {
+						"referenceName": "EQCR",
+						"type": "DatasetReference"
+					},
+					"name": "EQCR"
 				}
 			],
 			"sinks": [],
@@ -166,6 +173,9 @@
 				},
 				{
 					"name": "LeftJoinUCMODL"
+				},
+				{
+					"name": "EQCRSelect"
 				}
 			],
 			"scriptLines": [
@@ -482,6 +492,30 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> UCMODL",
+				"source(output(",
+				"          EQCR_DLR_NO as string,",
+				"          EQCR_ENQRY_NO as string,",
+				"          EQCR_SEQ as string,",
+				"          EQCR_CORP_NO as string,",
+				"          EQCR_CMPN_NO as string,",
+				"          EQCR_MODEL_CODE as string,",
+				"          EQCR_VRNT_CODE as string,",
+				"          EQCR_COLOR_CODE as string,",
+				"          EQCR_QTY as string,",
+				"          EQCR_CRTE_DTIME as string,",
+				"          EQCR_CRTE_EMP_NO as string,",
+				"          EQCR_UPDT_DTIME as string,",
+				"          EQCR_UPDT_EMP_NO as string,",
+				"          EQCR_INTCOLOR_CODE as string,",
+				"          EQCR_MAKER_CODE as string,",
+				"          EQCR_INT_COLOR_CODE as string,",
+				"          EQCR_QUOTED_PRICE as string,",
+				"          EQCR_EXPECTED_PRICE as string,",
+				"          EQCR_FUEL_TYPE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EQCR",
 				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
@@ -612,7 +646,23 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> LeftJoinUCMODL"
+				"     broadcast: 'auto')~> LeftJoinUCMODL",
+				"EQCR select(mapColumn(",
+				"          Dealer_No = EQCR_DLR_NO,",
+				"          Link_Enquiry_No = EQCR_ENQRY_NO,",
+				"          EQCR_SEQ,",
+				"          Corp = EQCR_CORP_NO,",
+				"          Comp = EQCR_CMPN_NO,",
+				"          Model_Code = EQCR_MODEL_CODE,",
+				"          TRIM_Code = EQCR_VRNT_CODE,",
+				"          Enquiry_Qty = EQCR_QTY,",
+				"          EQCR_CRTE_DTIME,",
+				"          EQCR_CRTE_EMP_NO,",
+				"          EQCR_MAKER_CODE,",
+				"          EQCR_EXPECTED_PRICE",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> EQCRSelect"
 			]
 		}
 	}
