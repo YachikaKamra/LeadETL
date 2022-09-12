@@ -175,7 +175,7 @@
 					"name": "LeftJoinTeamLeader"
 				},
 				{
-					"name": "Step10Select1"
+					"name": "Step10Select"
 				}
 			],
 			"scriptLines": [
@@ -930,7 +930,7 @@
 				"          KEC",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Step10Select1"
+				"     skipDuplicateMapOutputs: true) ~> Step10Select"
 			]
 		}
 	}
