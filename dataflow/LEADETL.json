@@ -945,9 +945,7 @@
 				"          BKNG_BILL_TO_CITY,",
 				"          BKNG_BILL_TO_TEHSIL",
 				"     ),",
-				"     partitionBy('hash', 2,",
-				"          ERROR_FUNCTION('')",
-				"     ),",
+				"     partitionBy('roundRobin', 5),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> Step15Select"
 			]
