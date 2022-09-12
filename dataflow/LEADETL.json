@@ -190,7 +190,7 @@
 					"name": "FilterDSS0011"
 				},
 				{
-					"name": "lookup1"
+					"name": "InvoiceTypeNameLookup"
 				}
 			],
 			"scriptLines": [
@@ -1023,10 +1023,11 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SWINVCSelect",
 				"Mapping5Select filter(CMM_GRP_CODE=='DSS0011') ~> FilterDSS0011",
-				"SWINVCSelect lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"SWINVCSelect, FilterDSS0011 lookup(SWINVCSelect@INVC_TYPE == Mapping5Select@INVC_TYPE,",
 				"     multiple: false,",
-				"     pickup: 'any',",
-				"     broadcast: 'auto')~> lookup1"
+				"     pickup: 'first',",
+				"     asc(Invoice_Type_Name, false),",
+				"     broadcast: 'auto')~> InvoiceTypeNameLookup"
 			]
 		}
 	}
