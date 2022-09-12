@@ -62,13 +62,6 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "EQFU",
-						"type": "DatasetReference"
-					},
-					"name": "EQFU"
-				},
-				{
-					"dataset": {
 						"referenceName": "SOBKNG",
 						"type": "DatasetReference"
 					},
@@ -151,9 +144,6 @@
 					"name": "TeamLeaderSelect"
 				},
 				{
-					"name": "EQFUSelect"
-				},
-				{
 					"name": "SOBKNGSelect"
 				},
 				{
@@ -176,6 +166,12 @@
 				},
 				{
 					"name": "Step10Select"
+				},
+				{
+					"name": "LeftJoinSOBKNG"
+				},
+				{
+					"name": "Step15Select"
 				}
 			],
 			"scriptLines": [
@@ -395,39 +391,6 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Teamleader",
-				"source(output(",
-				"          EQFU_DLR_NO as string,",
-				"          EQFU_ENQRY_NO as string,",
-				"          EQFU_SEQ as string,",
-				"          EQFU_CORP_NO as string,",
-				"          EQFU_CMPN_NO as string,",
-				"          EQFU_DATE as string,",
-				"          EQFU_TIME as string,",
-				"          EQFU_NTFU_DATE as string,",
-				"          EQFU_NTFU_TIME as string,",
-				"          EQFU_NTFU_DONE_YN as string,",
-				"          EQFU_AFTR_ENQRY_TYPE as string,",
-				"          EQFU_BFRE_ENQRY_TYPE as string,",
-				"          EQFU_RMRKS as string,",
-				"          EQFU_CRTE_DTIME as string,",
-				"          EQFU_CRTE_EMP_NO as string,",
-				"          EQFU_UPDT_DTIME as string,",
-				"          EQFU_UPDT_EMP_NO as string,",
-				"          EQFU_OTHER_CMTD_RMRKS as string,",
-				"          EQFU_SCHME_RMRKS as string,",
-				"          EQFU_MNGER_CALL_DATE as string,",
-				"          EQFU_MNGER_REMRKS as string,",
-				"          EQFU_ACTIVE_YN as string,",
-				"          EQFU_STEP_CODE as string,",
-				"          EQFU_SR_NUM as string,",
-				"          EQFU_FLUP_TYPE as string,",
-				"          EQFU_VERIFI_YN as string,",
-				"          EQFU_NTFU_TYPE as string,",
-				"          INFECT_RSON as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> EQFU",
 				"source(output(",
 				"          BKNG_DLR_NO as string,",
 				"          BKNG_NO as string,",
@@ -695,14 +658,6 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> TeamLeaderSelect",
-				"EQFU select(mapColumn(",
-				"          Dealer_No = EQFU_DLR_NO,",
-				"          Link_Enquiry_No = EQFU_ENQRY_NO,",
-				"          Corporation_No = EQFU_CORP_NO,",
-				"          Company_No = EQFU_CMPN_NO",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> EQFUSelect",
 				"SOBKNG select(mapColumn(",
 				"          Dealer_No = BKNG_DLR_NO,",
 				"          Booking_No = BKNG_NO,",
@@ -930,7 +885,68 @@
 				"          KEC",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Step10Select"
+				"     skipDuplicateMapOutputs: true) ~> Step10Select",
+				"Step10Select, SOBKNGSelect join(Step10Select@Dealer_No == SOBKNGSelect@Dealer_No,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinSOBKNG",
+				"LeftJoinSOBKNG select(mapColumn(",
+				"          Dealer_No = Step10Select@Dealer_No,",
+				"          Enquiry_No,",
+				"          Corporation_No = Step10Select@Corporation_No,",
+				"          Company_No = Step10Select@Company_No,",
+				"          Link_Date,",
+				"          EQRY_STAT,",
+				"          EQRY_CLSE_DATE,",
+				"          EQRY_EMP_NO,",
+				"          EQRY_CRTE_DTIME,",
+				"          EQRY_UPDT_DTIME,",
+				"          EQRY_MAKER_CODE,",
+				"          EQRY_CTGR_CODE,",
+				"          EQRY_SUB_SRC_CODE,",
+				"          Key,",
+				"          Enquiry_Source_Type,",
+				"          {Allocated/Unallocated},",
+				"          Flag,",
+				"          Enquiry_Status,",
+				"          Enquiry_Category_Type,",
+				"          Enquiry_Sub_Source_Name,",
+				"          Enquiry_Source,",
+				"          {Open/Close Flag},",
+				"          Enquiry_Type,",
+				"          Customer_No,",
+				"          OEM,",
+				"          Link_Enquiry_No = Step10Select@Link_Enquiry_No,",
+				"          EQCR_SEQ,",
+				"          Corp,",
+				"          Comp,",
+				"          Model_Code,",
+				"          TRIM_Code,",
+				"          Enquiry_Qty,",
+				"          EQCR_CRTE_DTIME,",
+				"          EQCR_CRTE_EMP_NO,",
+				"          Team_leader_Joining_Date,",
+				"          KEC_Short_Code,",
+				"          KEC_Long_Code,",
+				"          KEC_Join_Date,",
+				"          Team_Leader_Name,",
+				"          Team_Leader_Code,",
+				"          {Active/Inactive},",
+				"          KEC,",
+				"          Booking_No,",
+				"          Booking_Date,",
+				"          BKNG_CNCL_DATE,",
+				"          BKNG_EMP_NO,",
+				"          BKNG_CRTE_DTIME,",
+				"          BKNG_CRTE_EMP_NO,",
+				"          BKNG_CMTD_DLVRY_DATE,",
+				"          BKNG_BILL_TO_STATE,",
+				"          BKNG_BILL_TO_CITY,",
+				"          BKNG_BILL_TO_TEHSIL",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Step15Select"
 			]
 		}
 	}
