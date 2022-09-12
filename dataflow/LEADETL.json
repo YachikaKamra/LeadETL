@@ -191,6 +191,9 @@
 				},
 				{
 					"name": "InvoiceTypeNameLookup"
+				},
+				{
+					"name": "LeftJoinSWINVC"
 				}
 			],
 			"scriptLines": [
@@ -995,8 +998,8 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> Mapping5Select",
 				"SWINVC select(mapColumn(",
-				"          INVC_DLR_NO,",
-				"          INVC_NO,",
+				"          Dealer_No = INVC_DLR_NO,",
+				"          Invoice_No = INVC_NO,",
 				"          INVC_TYPE,",
 				"          INVC_CNFM_YN,",
 				"          INVC_CNFM_DATE,",
@@ -1027,7 +1030,12 @@
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Invoice_Type_Name, false),",
-				"     broadcast: 'auto')~> InvoiceTypeNameLookup"
+				"     broadcast: 'auto')~> InvoiceTypeNameLookup",
+				"Step15Select, InvoiceTypeNameLookup join(Step15Select@Dealer_No == SWINVCSelect@Dealer_No,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinSWINVC"
 			]
 		}
 	}
