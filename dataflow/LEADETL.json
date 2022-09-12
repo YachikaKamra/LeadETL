@@ -222,6 +222,9 @@
 				},
 				{
 					"name": "SOBKNGSelect"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -827,7 +830,7 @@
 				"     broadcast: 'auto')~> EnquirySubSourceNameLookup",
 				"EnquirySubSourceNameLookup derive(Enquiry_Sub_Source_Name = upper(iif(Enquiry_Sub_Source_Name=='Ads', 'Advertisements',Enquiry_Sub_Source_Name))) ~> Transformation2Step1",
 				"Transformation2Step1 derive(Enquiry_Sub_Source_Name = iif(Enquiry_Sub_Source_Name=='MYKIA', replace(Enquiry_Sub_Source_Name, 'MYKIA', 'ONLINE'), Enquiry_Sub_Source_Name)) ~> Transformation3Step1",
-				"Transformation3Step1 derive(Enquiry_Type2 = iif(Enquiry_Type1=='N','Neutral',Enquiry_Type1),",
+				"select1 derive(Enquiry_Type2 = iif(Enquiry_Type1=='N','Neutral',Enquiry_Type1),",
 				"          {Open/Close Flag} = iif(EQRYTB@EQRY_STAT=='01','Open',\r",
 				"                 iif(EQRYTB@EQRY_STAT=='05','Open',\r",
 				"                iif(EQRYTB@EQRY_STAT=='07','Open',\r",
@@ -1080,7 +1083,13 @@
 				"          BKNG_BILL_TO_VILLAGE",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> SOBKNGSelect"
+				"     skipDuplicateMapOutputs: true) ~> SOBKNGSelect",
+				"Transformation3Step1 select(mapColumn(",
+				"          each(match(/* All input columns */ true()),",
+				"               /* Input name */ $$ = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
