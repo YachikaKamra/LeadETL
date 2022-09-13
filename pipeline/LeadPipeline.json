@@ -15,9 +15,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"dataflow": {
+						"referenceName": "LEADETL",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "operationIR",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
