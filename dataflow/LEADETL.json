@@ -208,6 +208,12 @@
 				},
 				{
 					"name": "Transformation1Step18"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -678,7 +684,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> UCMAKESelect",
-				"EQCR select(mapColumn(",
+				"derivedColumn2 select(mapColumn(",
 				"          Dealer_No = EQCR_DLR_NO,",
 				"          Link_Enquiry_No = EQCR_ENQRY_NO,",
 				"          EQCR_SEQ,",
@@ -690,11 +696,12 @@
 				"          EQCR_CRTE_DTIME,",
 				"          EQCR_CRTE_EMP_NO,",
 				"          EQCR_MAKER_CODE,",
-				"          EQCR_EXPECTED_PRICE",
+				"          EQCR_EXPECTED_PRICE,",
+				"          Join_KEY",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> EQCRSelect",
-				"Step7Select, EQCRSelect join(Step7Select@Dealer_No == EQCRSelect@Dealer_No,",
+				"derivedColumn1, EQCRSelect join(select1@Dealer_No == EQCRSelect@Dealer_No,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -1133,6 +1140,8 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> Step17Select",
 				"LeftJoinSWINVC derive(INVC_BASIC_PRCE = substring(INVC_BASIC_PRCE, 4, 5)) ~> Transformation1Step18",
+				"Step7Select derive(Join_KEY = concat(Dealer_No,'|',Enquiry_No)) ~> derivedColumn1",
+				"EQCR derive(Join_KEY = concat(EQCR_DLR_NO,'|',EQCR_ENQRY_NO)) ~> derivedColumn2",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
