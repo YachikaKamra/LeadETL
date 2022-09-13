@@ -701,7 +701,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> EQCRSelect",
-				"derivedColumn1, EQCRSelect join(select1@Dealer_No == EQCRSelect@Dealer_No,",
+				"derivedColumn1, EQCRSelect join(derivedColumn1@Join_KEY == EQCRSelect@Join_KEY,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
