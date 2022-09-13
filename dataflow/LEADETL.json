@@ -84,6 +84,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "AzureSqlDBTable",
+						"type": "DatasetReference"
+					},
 					"name": "sink1SQLDB"
 				}
 			],
@@ -1130,8 +1134,14 @@
 				"LeftJoinSWINVC derive(INVC_BASIC_PRCE = substring(INVC_BASIC_PRCE, 4, 5)) ~> Transformation1Step18",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1SQLDB"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1SQLDB"
 			]
 		}
 	}
