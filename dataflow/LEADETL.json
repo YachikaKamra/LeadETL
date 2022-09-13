@@ -82,7 +82,11 @@
 					"name": "Mapping4CMCD"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1SQLDB"
+				}
+			],
 			"transformations": [
 				{
 					"name": "TransformationsStep1"
@@ -1123,7 +1127,11 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> Step17Select",
-				"LeftJoinSWINVC derive(INVC_BASIC_PRCE = substring(INVC_BASIC_PRCE, 4, 5)) ~> Transformation1Step18"
+				"LeftJoinSWINVC derive(INVC_BASIC_PRCE = substring(INVC_BASIC_PRCE, 4, 5)) ~> Transformation1Step18",
+				"Step17Select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1SQLDB"
 			]
 		}
 	}
