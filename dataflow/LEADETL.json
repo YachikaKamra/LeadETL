@@ -1148,8 +1148,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     partitionBy('roundRobin', 10)) ~> sink1SQLDB"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1SQLDB"
 			]
 		}
 	}
