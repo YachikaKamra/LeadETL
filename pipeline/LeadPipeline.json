@@ -19,9 +19,9 @@
 						"referenceName": "LEADETL",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 32,
-						"computeType": "MemoryOptimized"
+					"integrationRuntime": {
+						"referenceName": "operationIR",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
