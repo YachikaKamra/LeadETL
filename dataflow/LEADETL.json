@@ -82,7 +82,15 @@
 					"name": "Mapping4CMCD"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "LEADETLOUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "LEADETLSINK"
+				}
+			],
 			"transformations": [
 				{
 					"name": "TransformationsStep1"
@@ -1146,7 +1154,16 @@
 				"Step7Select derive(Join_KEY = concat(Dealer_No,Enquiry_No)) ~> derivedColumn1",
 				"EQCR derive(Join_KEY = concat(EQCR_DLR_NO,EQCR_ENQRY_NO)) ~> derivedColumn2",
 				"SOBKNGSelect derive(Join_KEY = concat(Dealer_No,Link_Enquiry_No)) ~> derivedColumn3",
-				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4"
+				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4",
+				"Step17Select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['LEADETL.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> LEADETLSINK"
 			]
 		}
 	}
