@@ -88,7 +88,7 @@
 						"referenceName": "SINK",
 						"type": "DatasetReference"
 					},
-					"name": "sink1SQLDB"
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -1164,7 +1164,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1),",
-				"     format: 'table') ~> sink1SQLDB"
+				"     format: 'table') ~> sink1"
 			]
 		}
 	}
