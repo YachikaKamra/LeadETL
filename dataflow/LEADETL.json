@@ -1157,11 +1157,13 @@
 				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['leadETL.csv'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1),",
 				"     format: 'table') ~> sink1SQLDB"
 			]
 		}
