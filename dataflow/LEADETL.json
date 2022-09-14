@@ -89,6 +89,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1SQLDB"
+				},
+				{
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -1152,7 +1155,11 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1SQLDB"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1SQLDB",
+				"Step9Select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
