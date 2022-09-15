@@ -6,18 +6,22 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "SCEQRY_TB",
+						"referenceName": "EQRY2",
 						"type": "DatasetReference"
 					},
 					"name": "EQRY"
 				}
 			],
-			"sinks": [],
-			"transformations": [
+			"sinks": [
 				{
-					"name": "filter1"
+					"dataset": {
+						"referenceName": "LEADETLOUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
 				}
 			],
+			"transformations": [],
 			"scriptLines": [
 				"source(output(",
 				"          EQRY_DLR_NO as string,",
@@ -100,7 +104,15 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> EQRY",
-				"EQRY filter(EQRY_DLR_NO == ',EAP3020060,C2021030044,,,,2021-03-08 15:29:34,EAP3020060,2021-05-06 18:57:04,EAP3020024,5.0,,,,,,,20.0,G,N,,,,,,,,,,,,,Y,,,,,11.0,16,DSO0003,,,,,,,,MOB,,,,,,,,') ~> filter1"
+				"EQRY sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['finaloutput.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
