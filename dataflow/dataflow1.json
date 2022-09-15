@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "EQRY2",
+						"referenceName": "HIT",
 						"type": "DatasetReference"
 					},
 					"name": "EQRY"
@@ -21,7 +21,11 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          EQRY_DLR_NO as string,",
@@ -104,9 +108,10 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> EQRY",
-				"EQRY sink(allowSchemaDrift: true,",
+				"EQRY filter(EQRY_DLR_NO== ',,,,MOB,,,,,,,,') ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['finaloutput.csv'],",
+				"     partitionFileNames:['HIT.csv'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
