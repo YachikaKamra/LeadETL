@@ -21,11 +21,7 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [
-				{
-					"name": "filter1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(output(",
 				"          EQRY_DLR_NO as string,",
@@ -108,8 +104,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> EQRY",
-				"EQRY filter(EQRY_DLR_NO== ',,,,MOB,,,,,,,,') ~> filter1",
-				"filter1 sink(allowSchemaDrift: true,",
+				"EQRY sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['HIT.csv'],",
 				"     umask: 0022,",
