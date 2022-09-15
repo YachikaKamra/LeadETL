@@ -220,6 +220,9 @@
 				},
 				{
 					"name": "derivedColumn4"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -611,7 +614,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> Mapping4CMCD",
-				"EQRYTB derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
+				"filter1 derive(Occup_Key = concat(EQRY_DLR_NO ,'|', EQRY_CUST_NO),",
 				"          Comp_key = concat(EQRY_MAKER_CODE,'|',EQRY_EXCHG_MODEL_CODE),",
 				"          {First Follow-Up KEY} = concat(EQRY_DLR_NO ,'|',EQRY_ENQRY_NO),",
 				"          Key = concat(EQRY_ENQRY_NO,'|',EQRY_DLR_NO),",
@@ -1155,6 +1158,7 @@
 				"EQCR derive(Join_KEY = concat(EQCR_DLR_NO,EQCR_ENQRY_NO)) ~> derivedColumn2",
 				"SOBKNGSelect derive(Join_KEY = concat(Dealer_No,Link_Enquiry_No)) ~> derivedColumn3",
 				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4",
+				"EQRYTB filter(EQRY_DLR_NO == ',EAP3020060,C2021030044,,,,2021-03-08 15:29:34,EAP3020060,2021-05-06 18:57:04,EAP3020024,5.0,,,,,,,20.0,G,N,,,,,,,,,,,,,Y,,,,,11.0,16,DSO0003,,,,,,,,MOB,,,,,,,,') ~> filter1",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['LEADETL.csv'],",
