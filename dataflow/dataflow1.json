@@ -10,33 +10,12 @@
 						"type": "DatasetReference"
 					},
 					"name": "EQRY"
-				},
-				{
-					"dataset": {
-						"referenceName": "EQCR",
-						"type": "DatasetReference"
-					},
-					"name": "EQCR"
 				}
 			],
-			"sinks": [
-				{
-					"dataset": {
-						"referenceName": "AzureSqlDBTable",
-						"type": "DatasetReference"
-					},
-					"name": "sink1"
-				}
-			],
+			"sinks": [],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
-				},
-				{
-					"name": "derivedColumn2"
-				},
-				{
-					"name": "join1"
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -121,48 +100,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> EQRY",
-				"source(output(",
-				"          EQCR_DLR_NO as string,",
-				"          EQCR_ENQRY_NO as string,",
-				"          EQCR_SEQ as string,",
-				"          EQCR_CORP_NO as string,",
-				"          EQCR_CMPN_NO as string,",
-				"          EQCR_MODEL_CODE as string,",
-				"          EQCR_VRNT_CODE as string,",
-				"          EQCR_COLOR_CODE as string,",
-				"          EQCR_QTY as string,",
-				"          EQCR_CRTE_DTIME as string,",
-				"          EQCR_CRTE_EMP_NO as string,",
-				"          EQCR_UPDT_DTIME as string,",
-				"          EQCR_UPDT_EMP_NO as string,",
-				"          EQCR_INTCOLOR_CODE as string,",
-				"          EQCR_MAKER_CODE as string,",
-				"          EQCR_INT_COLOR_CODE as string,",
-				"          EQCR_QUOTED_PRICE as string,",
-				"          EQCR_EXPECTED_PRICE as string,",
-				"          EQCR_FUEL_TYPE as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> EQCR",
-				"EQRY derive(JOIN_KEY = concat(EQRY_DLR_NO,'|',EQRY_ENQRY_NO)) ~> derivedColumn1",
-				"EQCR derive(JOIN_KEY = concat(EQCR_DLR_NO,'|',EQCR_ENQRY_NO)) ~> derivedColumn2",
-				"derivedColumn1, derivedColumn2 join(derivedColumn1@JOIN_KEY == derivedColumn2@JOIN_KEY,",
-				"     joinType:'inner',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     recreate:true,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"EQRY filter(EQRY_DLR_NO == ',EAP3020060,C2021030044,,,,2021-03-08 15:29:34,EAP3020060,2021-05-06 18:57:04,EAP3020024,5.0,,,,,,,20.0,G,N,,,,,,,,,,,,,Y,,,,,11.0,16,DSO0003,,,,,,,,MOB,,,,,,,,') ~> filter1"
 			]
 		}
 	}
