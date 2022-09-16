@@ -105,7 +105,7 @@
 				"     ignoreNoFilesFound: false) ~> EQRY",
 				"EQRY sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['HIT.csv'],",
+				"     partitionFileNames:['Lessdata.csv'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
