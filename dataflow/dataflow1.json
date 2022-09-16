@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Dropped",
+						"referenceName": "EQRY",
 						"type": "DatasetReference"
 					},
 					"name": "source1"

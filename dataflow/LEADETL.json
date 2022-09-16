@@ -5,6 +5,10 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "EQRY",
+						"type": "DatasetReference"
+					},
 					"name": "EQRYTB"
 				},
 				{
@@ -240,13 +244,12 @@
 				"          EQRY_QUOTD_PRICE as string,",
 				"          EQRY_CLSE_DATE as string,",
 				"          EQRY_CLSE_TYPE as string,",
-				"          EQRY_CLSE_RMRKS as string,",
 				"          EQRY_EMP_NO as string,",
 				"          EQRY_CUST_NO as string,",
 				"          EQRY_LISTD_CORP as string,",
 				"          EQRY_CORP_NAME as string,",
 				"          EQRY_RFRL_BY as string,",
-				"          EQRY_CRTE_DTIME as timestamp,",
+				"          EQRY_CRTE_DTIME as string,",
 				"          EQRY_CRTE_EMP_NO as string,",
 				"          EQRY_UPDT_DTIME as string,",
 				"          EQRY_UPDT_EMP_NO as string,",
@@ -277,7 +280,7 @@
 				"          EQRY_APNT_DTIME as string,",
 				"          VIST_DTIME as string,",
 				"          LEAV_DTIME as string,",
-				"          EQRY_CTGR_CODE as integer,",
+				"          EQRY_CTGR_CODE as string,",
 				"          EQRY_SUB_SRC_CODE as string,",
 				"          EQRY_CLSE_GRP_TYPE as string,",
 				"          EQRY_BUDG_TYPE as string,",
@@ -298,7 +301,8 @@
 				"          EQRY_CAMPGN_NO as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false) ~> EQRYTB",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EQRYTB",
 				"source(output(",
 				"          CMPN_NO as string,",
 				"          CORP_NO as string,",

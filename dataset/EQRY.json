@@ -1,5 +1,5 @@
 {
-	"name": "Dropped",
+	"name": "EQRY",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_ADLS",
