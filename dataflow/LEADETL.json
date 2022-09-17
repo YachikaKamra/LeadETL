@@ -759,7 +759,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SOBKNGSelect",
 				"Transformation3Step1 select(mapColumn(",
-				"          Dealer_No = EQRYTB@EQRY_DLR_NO,",
+				"          Dealer_No = EQRY_DLR_NO,",
 				"          Enquiry_No = EQRY_ENQRY_NO,",
 				"          Corporation_No = EQRY_CORP_NO,",
 				"          Company_No = EQRY_CMPN_NO,",
