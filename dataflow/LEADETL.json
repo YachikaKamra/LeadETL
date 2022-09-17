@@ -220,9 +220,6 @@
 				},
 				{
 					"name": "derivedColumn4"
-				},
-				{
-					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -633,7 +630,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> MappingSelect",
 				"MappingSelect filter(CMM_GRP_CODE=='DSO0002') ~> FilterDSO0002",
-				"filter1, FilterDSO0002 lookup(EQRYTB@EQRY_STAT == MappingSelect@EQRY_STAT,",
+				"TransformationsStep1, FilterDSO0002 lookup(EQRYTB@EQRY_STAT == MappingSelect@EQRY_STAT,",
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Status, false),",
@@ -1157,7 +1154,6 @@
 				"EQCR derive(Join_KEY = concat(EQCR_DLR_NO,EQCR_ENQRY_NO)) ~> derivedColumn2",
 				"SOBKNGSelect derive(Join_KEY = concat(Dealer_No,Link_Enquiry_No)) ~> derivedColumn3",
 				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4",
-				"TransformationsStep1 filter(EQRY_DLR_NO=='ï¿¼8169739962\"') ~> filter1",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['LEADETL.csv'],",
