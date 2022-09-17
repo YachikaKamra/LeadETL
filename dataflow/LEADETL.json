@@ -674,7 +674,7 @@
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Sub_Source_Name, false),",
-				"     asc(Enquiry_Source, true),",
+				"     asc(Enquiry_Source, false),",
 				"     broadcast: 'auto')~> EnquirySubSourceNameLookup",
 				"EnquirySubSourceNameLookup derive(Enquiry_Sub_Source_Name = upper(iif(Enquiry_Sub_Source_Name=='Ads', 'Advertisements',Enquiry_Sub_Source_Name))) ~> Transformation2Step1",
 				"Transformation2Step1 derive(Enquiry_Sub_Source_Name = iif(Enquiry_Sub_Source_Name=='MYKIA', replace(Enquiry_Sub_Source_Name, 'MYKIA', 'ONLINE'), Enquiry_Sub_Source_Name)) ~> Transformation3Step1",
