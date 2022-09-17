@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "EQRY",
+						"referenceName": "DeletedRowsEQRY",
 						"type": "DatasetReference"
 					},
 					"name": "EQRYTB"
@@ -220,6 +220,9 @@
 				},
 				{
 					"name": "derivedColumn4"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -620,6 +623,7 @@
 				"          Enquiry_Source_Type = iif(EQRY_SRC_FLG== 'MOB','MySales',    iif(length(EQRY_SR_NUM_REAL)>0,'Online','DMS')),",
 				"          {Allocated/Unallocated} = iif(length(trim(EQRY_EMP_NO))<1, 'Unallocated', 'Allocated'),",
 				"          Flag = 'Enquiry',",
+				"          EQRY_DLR_NO = iif(EQRY_DLR_NO=='ï¿¼8169739962\"', replace(EQRY_DLR_NO, 'ï¿¼8169739962\"', 'TRAP401'), EQRY_DLR_NO),",
 				"     partitionBy('roundRobin', 2)) ~> TransformationsStep1",
 				"MappingCMCD select(mapColumn(",
 				"          CMM_GRP_CODE,",
@@ -629,7 +633,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> MappingSelect",
 				"MappingSelect filter(CMM_GRP_CODE=='DSO0002') ~> FilterDSO0002",
-				"TransformationsStep1, FilterDSO0002 lookup(EQRYTB@EQRY_STAT == MappingSelect@EQRY_STAT,",
+				"filter1, FilterDSO0002 lookup(EQRYTB@EQRY_STAT == MappingSelect@EQRY_STAT,",
 				"     multiple: false,",
 				"     pickup: 'first',",
 				"     asc(Enquiry_Status, false),",
@@ -758,7 +762,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SOBKNGSelect",
 				"Transformation3Step1 select(mapColumn(",
-				"          Dealer_No = EQRY_DLR_NO,",
+				"          Dealer_No = EQRYTB@EQRY_DLR_NO,",
 				"          Enquiry_No = EQRY_ENQRY_NO,",
 				"          Corporation_No = EQRY_CORP_NO,",
 				"          Company_No = EQRY_CMPN_NO,",
@@ -1153,6 +1157,7 @@
 				"EQCR derive(Join_KEY = concat(EQCR_DLR_NO,EQCR_ENQRY_NO)) ~> derivedColumn2",
 				"SOBKNGSelect derive(Join_KEY = concat(Dealer_No,Link_Enquiry_No)) ~> derivedColumn3",
 				"InvoiceTypeNameLookup derive(Join_KEY = concat(Dealer_No,INVC_ENQRY_NO)) ~> derivedColumn4",
+				"TransformationsStep1 filter(EQRY_DLR_NO=='ï¿¼8169739962\"') ~> filter1",
 				"Step17Select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['LEADETL.csv'],",
