@@ -19,14 +19,16 @@
 						"referenceName": "LEADETL",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 32,
-						"computeType": "MemoryOptimized"
+					"integrationRuntime": {
+						"referenceName": "operationIR",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
 			}
 		],
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2022-09-13T12:01:27Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
