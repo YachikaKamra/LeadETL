@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "leaddatabaseoutput",
+						"referenceName": "LEADETLOUTPUT",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -132,22 +132,24 @@
 				"          Invoice_Date,",
 				"          Delivery_Date,",
 				"          Price = INVC_BASIC_PRCE,",
-				"          Invoice_Type_Name",
+				"          Invoice_Type_Name,",
+				"          ORD_BILL_TO_STATE = BKNG_BILL_TO_STATE,",
+				"          ORD_BILL_TO_CITY = BKNG_BILL_TO_CITY,",
+				"          INVC_TYPE,",
+				"          ORD_Cncl_Date = BKNG_CNCL_DATE",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
+				"     partitionFileNames:['LEADETLFINAL.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     preCommands: [],",
-				"     postCommands: []) ~> sink1"
+				"     partitionBy('hash', 1),",
+				"     format: 'table') ~> sink1"
 			]
 		}
 	}
